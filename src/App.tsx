@@ -1,10 +1,15 @@
-import './App.css'
+import { Canvas } from "@react-three/fiber";
+import GameScene from "./components/GameScene";
+import "./App.css";
 
 function App() {
-
   return (
-    <h1>Tetris</h1>
-  )
+    <div id="canvas-container">
+      <Canvas>
+        <GameScene />
+      </Canvas>
+    </div>
+  );
 }
 
-export default App
+export default App;
