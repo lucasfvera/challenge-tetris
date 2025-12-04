@@ -1,22 +1,50 @@
 import { useRef } from "react";
+import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { OrthographicCamera } from "@react-three/drei";
+import { OrthographicCamera, useKeyboardControls } from "@react-three/drei";
 import { useTetris } from "../hooks/useTetris";
 import { PieceRenderer } from "./pieces/PieceRenderer";
+import type { Controls } from "../utils/controlsMap";
+import { handleMoveLeft, handleMoveRight } from "../helpers/controlsBindings";
+import { canMoveLeft, canMoveRight } from "../helpers/constraints";
 
 const GameScene = () => {
-  const { board, activePiece, drop } = useTetris();
+  const { board, activePiece, tick, piecePosition } = useTetris();
   const timeRef = useRef(0);
+  const pieceRef = useRef<THREE.Group>(null!);
+  const [_, get] = useKeyboardControls<Controls>()
 
   useFrame((_, delta) => {
-    // We want to make the piece drop independent from the
-    // users frame rate. This will make the piece drop at a
-    // constant rate of 1 second.
+    const { moveLeft, moveRight, rotate, softDrop, hardDrop } = get()
+
+    // Game Loop Tick
     timeRef.current += delta * 1000;
     if (timeRef.current > 200) {
-      drop();
+      tick();
       timeRef.current = 0;
     }
+
+    // Imperative Update of Piece Position
+    if (pieceRef.current) {
+      pieceRef.current.position.set(piecePosition.current.x, piecePosition.current.y, 0);
+    }
+
+    if (moveRight && canMoveRight(piecePosition, activePiece.tetromino.rotations[activePiece.rotationIndex].bounds)) {
+      handleMoveRight(piecePosition)
+    }
+    if (moveLeft && canMoveLeft(piecePosition, activePiece.tetromino.rotations[activePiece.rotationIndex].bounds)) {
+      handleMoveLeft(piecePosition)
+    }
+    // if (rotate) {
+    //   handleRotate(piecePosition)
+    // }
+    // if (softDrop) {
+    //   handleSoftDrop(piecePosition)
+    // }
+    // if (hardDrop) {
+    //   handleHardDrop(piecePosition)
+    // }
+
   });
 
   return (
@@ -40,7 +68,9 @@ const GameScene = () => {
 
         {/* Render Active Piece */}
         {activePiece && (
-          <PieceRenderer type={activePiece.type} position={[activePiece.pos.x, activePiece.pos.y, 0]} color={activePiece.tetromino.color} />
+          <group ref={pieceRef}>
+            <PieceRenderer type={activePiece.type} position={[0, 0, 0]} color={activePiece.tetromino.color} />
+          </group>
         )}
       </group>
     </>
