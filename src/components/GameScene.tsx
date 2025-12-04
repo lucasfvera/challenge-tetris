@@ -29,10 +29,10 @@ const GameScene = () => {
       pieceRef.current.position.set(piecePosition.current.x, piecePosition.current.y, 0);
     }
 
-    if (moveRight && canMoveRight(piecePosition, activePiece.tetromino.rotations[activePiece.rotationIndex].bounds)) {
+    if (moveRight && canMoveRight(piecePosition, activePiece.tetromino.rotations[activePiece.rotationIndex].bounds, activePiece.tetromino.rotations[activePiece.rotationIndex].shape, board)) {
       handleMoveRight(piecePosition)
     }
-    if (moveLeft && canMoveLeft(piecePosition, activePiece.tetromino.rotations[activePiece.rotationIndex].bounds)) {
+    if (moveLeft && canMoveLeft(piecePosition, activePiece.tetromino.rotations[activePiece.rotationIndex].bounds, activePiece.tetromino.rotations[activePiece.rotationIndex].shape, board)) {
       handleMoveLeft(piecePosition)
     }
     // if (rotate) {
