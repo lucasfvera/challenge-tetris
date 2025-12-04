@@ -6,7 +6,7 @@ interface ZPieceProps {
   color?: string;
 }
 
-const ZPiece: React.FC<ZPieceProps> = ({ position = [0, 0, 0], color = "red" }) => {
+const ZPiece = ({ position = [0, 0, 0], color = "red" }: ZPieceProps) => {
   const ref = React.useRef<Group>(null!);
 
   // 'Z' tetromino shape

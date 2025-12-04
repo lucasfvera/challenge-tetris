@@ -6,7 +6,7 @@ interface IPieceProps {
   color?: string;
 }
 
-const IPiece: React.FC<IPieceProps> = ({ position = [0, 0, 0], color = "cyan" }) => {
+const IPiece = ({ position = [0, 0, 0], color = "cyan" }: IPieceProps) => {
   const ref = React.useRef<Group>(null!);
 
   // 'I' tetromino shape

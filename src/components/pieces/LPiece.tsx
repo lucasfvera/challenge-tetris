@@ -6,7 +6,7 @@ interface LPieceProps {
   color?: string;
 }
 
-const LPiece: React.FC<LPieceProps> = ({ position = [0, 0, 0], color = "orange" }) => {
+const LPiece = ({ position = [0, 0, 0], color = "orange" }: LPieceProps) => {
   const ref = React.useRef<Group>(null!);
 
   // 'L' tetromino shape

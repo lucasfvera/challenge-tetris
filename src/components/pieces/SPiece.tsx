@@ -6,7 +6,7 @@ interface SPieceProps {
   color?: string;
 }
 
-const SPiece: React.FC<SPieceProps> = ({ position = [0, 0, 0], color = "green" }) => {
+const SPiece = ({ position = [0, 0, 0], color = "green" }: SPieceProps) => {
   const ref = React.useRef<Group>(null!);
 
   // 'S' tetromino shape

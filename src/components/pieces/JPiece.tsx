@@ -6,7 +6,7 @@ interface JPieceProps {
   color?: string;
 }
 
-const JPiece: React.FC<JPieceProps> = ({ position = [0, 0, 0], color = "blue" }) => {
+const JPiece = ({ position = [0, 0, 0], color = "blue" }: JPieceProps) => {
   const ref = React.useRef<Group>(null!);
 
   // 'J' tetromino shape

@@ -9,11 +9,12 @@ interface OPieceProps {
 const OPiece = ({ position = [0, 0, 0], color = "yellow" }: OPieceProps) => {
   const ref = React.useRef<Group>(null!);
 
+  // These are internal coordinates for positioning the piece within the group
   const blockPositions: [number, number, number][] = [
-    [-0.5, 0.5, 0], // Top-left
-    [0.5, 0.5, 0],  // Top-right
-    [-0.5, -0.5, 0], // Bottom-left
-    [0.5, -0.5, 0],  // Bottom-right
+    [0, 1, 0], // Top-left
+    [1, 1, 0],  // Top-right
+    [1, 0, 0], // Bottom-left
+    [0, 0, 0],  // Bottom-right
   ];
 
   return (
