@@ -3,6 +3,7 @@ import { TETROMINOES, type Tetromino, pieceTypeMap, type PieceType } from "../ut
 import { BOARD_HEIGHT, BOARD_WIDTH, createEmptyBoard, type Board } from "../utils/board";
 import { randomPiece } from "../helpers/randomPiece";
 import { canRotate } from "../helpers/constraints";
+import { clearFullLines } from "../helpers/clearFullLines";
 
 export interface IActivePiece {
     pos: { x: number; y: number };
@@ -66,7 +67,7 @@ export const useTetris = () => {
         if (collided) {
             // Lock the piece
             setBoard((prevBoard) => {
-                const newBoard = prevBoard.map((row) => [...row]);
+                let newBoard = prevBoard.map((row) => [...row]);
                 shape.forEach((row, rowIndex) => {
                     row.forEach((value, colIndex) => {
                         if (value !== 0) {
@@ -78,6 +79,8 @@ export const useTetris = () => {
                         }
                     });
                 });
+                newBoard = clearFullLines(newBoard);
+
                 return newBoard;
             });
 
@@ -109,3 +112,4 @@ export const useTetris = () => {
 
     return { board, activePiece, piecePosition, tick, rotate };
 };
+
