@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { OrthographicCamera, useKeyboardControls } from "@react-three/drei";
@@ -9,10 +9,19 @@ import { handleMoveLeft, handleMoveRight } from "../helpers/controlsBindings";
 import { canMoveLeft, canMoveRight } from "../helpers/constraints";
 
 const GameScene = () => {
-  const { board, activePiece, tick, piecePosition } = useTetris();
+  const { board, activePiece, tick, piecePosition, rotate: rotatePiece } = useTetris();
   const timeRef = useRef(0);
   const pieceRef = useRef<THREE.Group>(null!);
-  const [_, get] = useKeyboardControls<Controls>()
+  const [sub, get] = useKeyboardControls<Controls>()
+
+  useEffect(() => {
+    return sub(
+      (state) => state.rotate,
+      (pressed) => {
+        if (pressed) rotatePiece();
+      }
+    )
+  }, [rotatePiece])
 
   useFrame((_, delta) => {
     const { moveLeft, moveRight, rotate, softDrop, hardDrop } = get()
@@ -35,9 +44,6 @@ const GameScene = () => {
     if (moveLeft && canMoveLeft(piecePosition, activePiece.tetromino.rotations[activePiece.rotationIndex].bounds, activePiece.tetromino.rotations[activePiece.rotationIndex].shape, board)) {
       handleMoveLeft(piecePosition)
     }
-    // if (rotate) {
-    //   handleRotate(piecePosition)
-    // }
     // if (softDrop) {
     //   handleSoftDrop(piecePosition)
     // }
@@ -69,7 +75,7 @@ const GameScene = () => {
         {/* Render Active Piece */}
         {activePiece && (
           <group ref={pieceRef}>
-            <PieceRenderer type={activePiece.type} position={[0, 0, 0]} color={activePiece.tetromino.color} />
+            <PieceRenderer type={activePiece.type} position={[0, 0, 0]} color={activePiece.tetromino.color} rotationIndex={activePiece.rotationIndex} />
           </group>
         )}
       </group>

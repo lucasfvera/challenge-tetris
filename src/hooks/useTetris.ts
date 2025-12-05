@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { TETROMINOES, type Tetromino, pieceTypeMap, type PieceType } from "../utils/tetrominoes";
 import { BOARD_HEIGHT, BOARD_WIDTH, createEmptyBoard, type Board } from "../utils/board";
 import { randomPiece } from "../helpers/randomPiece";
+import { canRotate } from "../helpers/constraints";
 
 export interface IActivePiece {
     pos: { x: number; y: number };
@@ -90,5 +91,21 @@ export const useTetris = () => {
         }
     }, []);
 
-    return { board, activePiece, piecePosition, tick };
+    const rotate = useCallback(() => {
+        const currentPiece = activePieceRef.current;
+        if (currentPiece.collided) return;
+
+        const nextRotationIndex = (currentPiece.rotationIndex + 1) % 4;
+        const nextShape = currentPiece.tetromino.rotations[nextRotationIndex].shape;
+
+        if (canRotate(piecePosition, nextShape, boardRef.current)) {
+            setActivePiece((prev) => ({
+                ...prev,
+                rotationIndex: nextRotationIndex,
+                pos: { x: piecePosition.current.x, y: piecePosition.current.y },
+            }));
+        }
+    }, [piecePosition]);
+
+    return { board, activePiece, piecePosition, tick, rotate };
 };

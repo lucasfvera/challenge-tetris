@@ -55,3 +55,33 @@ export const canMoveRight = (piecePosition: RefObject<{ x: number; y: number }>,
     }
     return true;
 }
+
+export const canRotate = (piecePosition: RefObject<{ x: number; y: number }>, nextShape: number[][], board: Board) => {
+    const currentX = piecePosition.current.x;
+    const currentY = piecePosition.current.y;
+
+    for (let row = 0; row < nextShape.length; row++) {
+        for (let col = 0; col < nextShape[row].length; col++) {
+            if (nextShape[row][col] !== 0) {
+                const boardX = currentX + col;
+                const boardY = currentY + (nextShape.length - 1 - row);
+
+                // 1. Wall Collision
+                if (boardX < 0 || boardX >= BOARD_WIDTH) {
+                    return false;
+                }
+
+                // 2. Floor Collision
+                if (boardY < 0) {
+                    return false;
+                }
+
+                // 3. Board Collision
+                if (boardY < BOARD_HEIGHT && board[boardY][boardX] !== null) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}

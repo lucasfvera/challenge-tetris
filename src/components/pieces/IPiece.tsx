@@ -1,30 +1,29 @@
 import React from "react";
 import { Group } from "three";
+import { TETROMINOES, pieceTypeMap } from "../../utils/tetrominoes";
 
 interface IPieceProps {
   position?: [number, number, number];
   color?: string;
+  rotationIndex: number;
 }
 
-const IPiece = ({ position = [0, 0, 0], color = "cyan" }: IPieceProps) => {
+const IPiece = ({ position = [0, 0, 0], color = "cyan", rotationIndex }: IPieceProps) => {
   const ref = React.useRef<Group>(null!);
-
-  // 'I' tetromino shape
-  const blockPositions: [number, number, number][] = [
-    [0, 0, 0],
-    [1, 0, 0],
-    [2, 0, 0],
-    [3, 0, 0],
-  ];
+  const shape = TETROMINOES[pieceTypeMap.I].rotations[rotationIndex].shape;
 
   return (
     <group ref={ref} position={position}>
-      {blockPositions.map((pos, index) => (
-        <mesh key={index} position={pos}>
-          <planeGeometry args={[1, 1]} />
-          <meshStandardMaterial color={color} />
-        </mesh>
-      ))}
+      {shape.map((row, rowIndex) =>
+        row.map((cell, colIndex) =>
+          cell ? (
+            <mesh key={`${rowIndex}-${colIndex}`} position={[colIndex, shape.length - 1 - rowIndex, 0]}>
+              <planeGeometry args={[1, 1]} />
+              <meshStandardMaterial color={color} />
+            </mesh>
+          ) : null
+        )
+      )}
     </group>
   );
 };
