@@ -8,6 +8,9 @@ import type { Controls } from "../utils/controlsMap";
 import { handleMoveLeft, handleMoveRight } from "../helpers/controlsBindings";
 import { canMoveLeft, canMoveRight } from "../helpers/constraints";
 
+const MOVE_DELAY = 100; //ms
+const SOFT_DROP_SPEED_MULTIPLIER = 10_000;
+
 const GameScene = () => {
   const { board, activePiece, tick, piecePosition, rotate: rotatePiece } = useTetris();
   const { clock } = useThree();
@@ -30,7 +33,6 @@ const GameScene = () => {
   }, [rotatePiece])
 
   const lastMoveTime = useRef(0);
-  const MOVE_DELAY = 100; //ms
 
   useFrame((_, delta) => {
     const { moveLeft, moveRight, softDrop } = get()
@@ -40,7 +42,7 @@ const GameScene = () => {
     timeRef.current += delta * 1000;
     if (timeRef.current > 200) {
       tick();
-      timeRef.current = 0;
+      timeRef.current -= 200;
     }
 
     // Imperative Update of Piece Position
@@ -60,7 +62,7 @@ const GameScene = () => {
     }
 
     if (softDrop) {
-      timeRef.current += delta * 10000;
+      timeRef.current += delta * SOFT_DROP_SPEED_MULTIPLIER;
     }
 
   });
