@@ -33,7 +33,7 @@ const GameScene = () => {
   const MOVE_DELAY = 100; //ms
 
   useFrame((_, delta) => {
-    const { moveLeft, moveRight, softDrop, hardDrop } = get()
+    const { moveLeft, moveRight, softDrop } = get()
     const currentTime = clock.getElapsedTime() * 1000;
 
     // Game Loop Tick
@@ -57,6 +57,10 @@ const GameScene = () => {
         handleMoveLeft(piecePosition);
         lastMoveTime.current = currentTime;
       }
+    }
+
+    if (softDrop) {
+      timeRef.current += delta * 10000;
     }
 
   });
