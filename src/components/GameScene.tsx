@@ -24,8 +24,12 @@ const GameScene = () => {
     )
   }, [rotatePiece])
 
+  const lastMoveTime = useRef(0);
+  const MOVE_DELAY = 100; //ms
+
   useFrame(({ clock }, delta) => {
     const { moveLeft, moveRight, softDrop, hardDrop, pause } = get()
+    const currentTime = clock.getElapsedTime() * 1000;
 
     // Game Loop Tick
     timeRef.current += delta * 1000;
@@ -47,11 +51,15 @@ const GameScene = () => {
       pieceRef.current.position.set(piecePosition.current.x, piecePosition.current.y, 0);
     }
 
-    if (moveRight && canMoveRight(piecePosition, bounds, shape, board)) {
-      handleMoveRight(piecePosition)
-    }
-    if (moveLeft && canMoveLeft(piecePosition, bounds, shape, board)) {
-      handleMoveLeft(piecePosition)
+    if (currentTime - lastMoveTime.current > MOVE_DELAY) {
+      if (moveRight && canMoveRight(piecePosition, bounds, shape, board)) {
+        handleMoveRight(piecePosition);
+        lastMoveTime.current = currentTime;
+      }
+      if (moveLeft && canMoveLeft(piecePosition, bounds, shape, board)) {
+        handleMoveLeft(piecePosition);
+        lastMoveTime.current = currentTime;
+      }
     }
 
   });
