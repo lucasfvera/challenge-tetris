@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { OrthographicCamera, useKeyboardControls } from "@react-three/drei";
 import { useTetris } from "../hooks/useTetris";
 import { PieceRenderer } from "./pieces/PieceRenderer";
@@ -10,6 +10,7 @@ import { canMoveLeft, canMoveRight } from "../helpers/constraints";
 
 const GameScene = () => {
   const { board, activePiece, tick, piecePosition, rotate: rotatePiece } = useTetris();
+  const { clock } = useThree();
   const timeRef = useRef(0);
   const pieceRef = useRef<THREE.Group>(null!);
   const [sub, get] = useKeyboardControls<Controls>()
@@ -17,9 +18,13 @@ const GameScene = () => {
 
   useEffect(() => {
     return sub(
-      (state) => state.rotate,
+      (state) => state,
       (pressed) => {
-        if (pressed) rotatePiece();
+        if (pressed.rotate) rotatePiece();
+        if (pressed.pause) {
+          clock.running ? clock.stop() : clock.start()
+          lastMoveTime.current = 0;
+        };
       }
     )
   }, [rotatePiece])
@@ -27,8 +32,8 @@ const GameScene = () => {
   const lastMoveTime = useRef(0);
   const MOVE_DELAY = 100; //ms
 
-  useFrame(({ clock }, delta) => {
-    const { moveLeft, moveRight, softDrop, hardDrop, pause } = get()
+  useFrame((_, delta) => {
+    const { moveLeft, moveRight, softDrop, hardDrop } = get()
     const currentTime = clock.getElapsedTime() * 1000;
 
     // Game Loop Tick
@@ -38,20 +43,12 @@ const GameScene = () => {
       timeRef.current = 0;
     }
 
-    if (pause) {
-      if (clock.running) {
-        clock.stop()
-      } else {
-        clock.start()
-      }
-    }
-
     // Imperative Update of Piece Position
     if (pieceRef.current) {
       pieceRef.current.position.set(piecePosition.current.x, piecePosition.current.y, 0);
     }
 
-    if (currentTime - lastMoveTime.current > MOVE_DELAY) {
+    if (currentTime - lastMoveTime.current > MOVE_DELAY && clock.running) {
       if (moveRight && canMoveRight(piecePosition, bounds, shape, board)) {
         handleMoveRight(piecePosition);
         lastMoveTime.current = currentTime;
