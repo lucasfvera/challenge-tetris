@@ -24,14 +24,22 @@ const GameScene = () => {
     )
   }, [rotatePiece])
 
-  useFrame((_, delta) => {
-    const { moveLeft, moveRight, rotate, softDrop, hardDrop } = get()
+  useFrame(({ clock }, delta) => {
+    const { moveLeft, moveRight, softDrop, hardDrop, pause } = get()
 
     // Game Loop Tick
     timeRef.current += delta * 1000;
     if (timeRef.current > 200) {
       tick();
       timeRef.current = 0;
+    }
+
+    if (pause) {
+      if (clock.running) {
+        clock.stop()
+      } else {
+        clock.start()
+      }
     }
 
     // Imperative Update of Piece Position

@@ -5,6 +5,7 @@ export const controlsMap = {
   rotate: 'rotate',
   softDrop: 'softDrop',
   hardDrop: 'hardDrop',
+  pause: 'pause',
 } as const;
 
 export type Controls = keyof typeof controlsMap;

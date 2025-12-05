@@ -13,16 +13,19 @@ function App() {
     { name: controlsMap.rotate, keys: ['ArrowUp', 'KeyW'] },
     { name: controlsMap.softDrop, keys: ['ArrowDown', 'KeyS'] },
     { name: controlsMap.hardDrop, keys: ['Space'] },
+    { name: controlsMap.pause, keys: ['p'] },
   ], [])
 
-  return (
-    <div id="canvas-container">
+  return (<>
+    <div style={{ position: "relative" }} id="canvas-container">
+      <h1 id="paused-title" style={{ visibility: "hidden", position: "absolute", top: "40%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 10 }}>Paused</h1>
       <KeyboardControls map={map}>
         <Canvas>
           <GameScene />
         </Canvas>
       </KeyboardControls>
     </div>
+  </>
   );
 }
 
