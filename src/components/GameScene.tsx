@@ -13,6 +13,7 @@ const GameScene = () => {
   const timeRef = useRef(0);
   const pieceRef = useRef<THREE.Group>(null!);
   const [sub, get] = useKeyboardControls<Controls>()
+  const { bounds, shape } = activePiece.tetromino.rotations[activePiece.rotationIndex]
 
   useEffect(() => {
     return sub(
@@ -38,18 +39,12 @@ const GameScene = () => {
       pieceRef.current.position.set(piecePosition.current.x, piecePosition.current.y, 0);
     }
 
-    if (moveRight && canMoveRight(piecePosition, activePiece.tetromino.rotations[activePiece.rotationIndex].bounds, activePiece.tetromino.rotations[activePiece.rotationIndex].shape, board)) {
+    if (moveRight && canMoveRight(piecePosition, bounds, shape, board)) {
       handleMoveRight(piecePosition)
     }
-    if (moveLeft && canMoveLeft(piecePosition, activePiece.tetromino.rotations[activePiece.rotationIndex].bounds, activePiece.tetromino.rotations[activePiece.rotationIndex].shape, board)) {
+    if (moveLeft && canMoveLeft(piecePosition, bounds, shape, board)) {
       handleMoveLeft(piecePosition)
     }
-    // if (softDrop) {
-    //   handleSoftDrop(piecePosition)
-    // }
-    // if (hardDrop) {
-    //   handleHardDrop(piecePosition)
-    // }
 
   });
 
