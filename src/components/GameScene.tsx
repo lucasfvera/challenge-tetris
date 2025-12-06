@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { OrthographicCamera, useKeyboardControls } from "@react-three/drei";
 import { useTetris } from "../hooks/useTetris";
-import { PieceRenderer } from "./pieces/PieceRenderer";
+import { PieceRenderer } from "./PieceRenderer";
 import type { Controls } from "../utils/controlsMap";
 import { handleMoveLeft, handleMoveRight } from "../helpers/controlsBindings";
 import { canMoveLeft, canMoveRight } from "../helpers/constraints";

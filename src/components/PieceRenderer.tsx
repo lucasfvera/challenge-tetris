@@ -1,11 +1,11 @@
-import { type PieceType, pieceTypeMap } from "../../utils/tetrominoes"
-import IPiece from "./IPiece";
-import JPiece from "./JPiece";
-import LPiece from "./LPiece";
-import OPiece from "./OPiece";
-import SPiece from "./SPiece";
-import TPiece from "./TPiece";
-import ZPiece from "./ZPiece";
+import { type PieceType, pieceTypeMap } from "../utils/tetrominoes"
+import IPiece from "./models/pieces/IPiece";
+import JPiece from "./models/pieces/JPiece";
+import LPiece from "./models/pieces/LPiece";
+import OPiece from "./models/pieces/OPiece";
+import SPiece from "./models/pieces/SPiece";
+import TPiece from "./models/pieces/TPiece";
+import ZPiece from "./models/pieces/ZPiece";
 
 export const PieceRenderer = ({ type, position, color, rotationIndex }: { type: PieceType, position: [number, number, number], color: string, rotationIndex: number }) => {
     switch (type) {

@@ -1,16 +1,16 @@
 import React from "react";
 import { Group } from "three";
-import { TETROMINOES, pieceTypeMap } from "../../utils/tetrominoes";
+import { TETROMINOES, pieceTypeMap } from "../../../utils/tetrominoes";
 
-interface IPieceProps {
+interface JPieceProps {
   position?: [number, number, number];
   color?: string;
   rotationIndex: number;
 }
 
-const IPiece = ({ position = [0, 0, 0], color = "cyan", rotationIndex }: IPieceProps) => {
+const JPiece = ({ position = [0, 0, 0], color = "blue", rotationIndex }: JPieceProps) => {
   const ref = React.useRef<Group>(null!);
-  const shape = TETROMINOES[pieceTypeMap.I].rotations[rotationIndex].shape;
+  const shape = TETROMINOES[pieceTypeMap.J].rotations[rotationIndex].shape;
 
   return (
     <group ref={ref} position={position}>
@@ -28,4 +28,4 @@ const IPiece = ({ position = [0, 0, 0], color = "cyan", rotationIndex }: IPieceP
   );
 };
 
-export default IPiece;
+export default JPiece;
