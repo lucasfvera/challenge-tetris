@@ -24,14 +24,14 @@ export const useTetris = () => {
     });
 
     const latestScore = useRef(0);
-
     const boardRef = useRef(board);
     useEffect(() => {
         boardRef.current = board;
     }, [board]);
-
     const piecePosition = useRef({ x: 0, y: BOARD_HEIGHT - 1 });
     const activePieceRef = useRef(activePiece);
+    const nextPieceRef = useRef(randomPiece());
+
     useEffect(() => {
         activePieceRef.current = activePiece;
         piecePosition.current = activePiece.pos;
@@ -90,8 +90,8 @@ export const useTetris = () => {
             });
 
             // Spawn new piece
-            const nextPiece = randomPiece();
-            setActivePiece(nextPiece);
+            setActivePiece(nextPieceRef.current);
+            nextPieceRef.current = randomPiece();
             // Position ref will be updated by the useEffect above
         } else {
             // Update position ref
@@ -115,6 +115,6 @@ export const useTetris = () => {
         }
     }, [piecePosition]);
 
-    return { board, activePiece, piecePosition, tick, rotate, latestScore };
+    return { board, activePiece, nextPieceType: nextPieceRef.current.type, piecePosition, tick, rotate, latestScore };
 };
 

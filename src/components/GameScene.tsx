@@ -11,7 +11,7 @@ import { useGameStateStore } from "../store/store";
 import { MOVE_DELAY, SOFT_DROP_SPEED_MULTIPLIER } from "../settings/gameSettings";
 
 const GameScene = () => {
-  const { board, activePiece, tick, piecePosition, rotate: rotatePiece, latestScore } = useTetris();
+  const { board, activePiece, tick, piecePosition, rotate: rotatePiece, latestScore, nextPieceType } = useTetris();
   const { clock } = useThree();
   const timeRef = useRef(0);
   const pieceRef = useRef<THREE.Group>(null!);
@@ -21,10 +21,13 @@ const GameScene = () => {
   const togglePause = useGameStateStore((state) => (state.togglePause));
   const setScore = useGameStateStore((state) => (state.setScore));
   const score = useGameStateStore((state) => (state.score));
+  const setNextPieceType = useGameStateStore((state) => (state.setNextPieceType));
 
   const { bounds, shape } = activePiece.tetromino.rotations[activePiece.rotationIndex]
 
   useEffect(() => {
+    setNextPieceType(nextPieceType);
+
     return sub(
       (state) => { return { rotate: state.rotate, pause: state.pause } },
       (pressed) => {
@@ -41,7 +44,7 @@ const GameScene = () => {
         };
       }
     )
-  }, [rotatePiece, isGamePaused, clock])
+  }, [rotatePiece, isGamePaused, clock, nextPieceType])
 
   useFrame((_, delta) => {
     const { moveLeft, moveRight, softDrop } = get()
