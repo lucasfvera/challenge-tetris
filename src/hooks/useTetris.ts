@@ -69,6 +69,8 @@ export const useTetris = () => {
         if (collided) {
             // Lock the piece
             setBoard((prevBoard) => {
+                // We declare it as let to indicate that is being mutated even though it is not being reassigned
+                //eslint-disable-next-line prefer-const
                 let newBoard = prevBoard.map((row) => [...row]);
                 shape.forEach((row, rowIndex) => {
                     row.forEach((value, colIndex) => {
