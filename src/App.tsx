@@ -5,6 +5,7 @@ import { KeyboardControls, type KeyboardControlsEntry } from "@react-three/drei"
 import { Activity, useMemo } from "react";
 import { controlsMap, type Controls } from "./utils/controlsMap";
 import { useGameStateStore } from "./store/store";
+import { Score } from "./components/Score";
 
 function App() {
 
@@ -19,18 +20,20 @@ function App() {
 
   const isGamePaused = useGameStateStore((state) => state.isGamePaused);
 
-  return (<>
-    <div style={{ position: "relative" }} id="canvas-container">
-      <Activity mode={isGamePaused ? "visible" : "hidden"}>
-        <h1 id="paused-title" style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 10 }}>Paused</h1>
-      </Activity>
-      <KeyboardControls map={map}>
-        <Canvas>
-          <GameScene />
-        </Canvas>
-      </KeyboardControls>
+  return (
+    <div style={{ display: "flex", gap: "2rem" }}>
+      <div style={{ position: "relative" }} id="canvas-container">
+        <Activity mode={isGamePaused ? "visible" : "hidden"}>
+          <h1 id="paused-title" style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 10 }}>Paused</h1>
+        </Activity>
+        <KeyboardControls map={map}>
+          <Canvas>
+            <GameScene />
+          </Canvas>
+        </KeyboardControls>
+      </div>
+      <Score />
     </div>
-  </>
   );
 }
 

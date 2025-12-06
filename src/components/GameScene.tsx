@@ -8,18 +8,19 @@ import type { Controls } from "../utils/controlsMap";
 import { handleMoveLeft, handleMoveRight } from "../helpers/controlsBindings";
 import { canMoveLeft, canMoveRight } from "../helpers/constraints";
 import { useGameStateStore } from "../store/store";
-
-const MOVE_DELAY = 100; //ms
-const SOFT_DROP_SPEED_MULTIPLIER = 10_000;
+import { MOVE_DELAY, SOFT_DROP_SPEED_MULTIPLIER } from "../settings/gameSettings";
 
 const GameScene = () => {
-  const { board, activePiece, tick, piecePosition, rotate: rotatePiece } = useTetris();
+  const { board, activePiece, tick, piecePosition, rotate: rotatePiece, latestScore } = useTetris();
   const { clock } = useThree();
   const timeRef = useRef(0);
   const pieceRef = useRef<THREE.Group>(null!);
   const lastMoveTime = useRef(0);
   const [sub, get] = useKeyboardControls<Controls>()
-  const { isGamePaused, togglePause } = useGameStateStore();
+  const isGamePaused = useGameStateStore((state) => (state.isGamePaused));
+  const togglePause = useGameStateStore((state) => (state.togglePause));
+  const setScore = useGameStateStore((state) => (state.setScore));
+  const score = useGameStateStore((state) => (state.score));
 
   const { bounds, shape } = activePiece.tetromino.rotations[activePiece.rotationIndex]
 
@@ -51,6 +52,10 @@ const GameScene = () => {
     if (timeRef.current > 200) {
       tick();
       timeRef.current -= 200;
+    }
+
+    if (score !== latestScore.current) {
+      setScore(latestScore.current);
     }
 
     // Imperative Update of Piece Position

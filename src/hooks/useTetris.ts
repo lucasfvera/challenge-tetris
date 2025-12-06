@@ -23,6 +23,8 @@ export const useTetris = () => {
         collided: false,
     });
 
+    const latestScore = useRef(0);
+
     const boardRef = useRef(board);
     useEffect(() => {
         boardRef.current = board;
@@ -79,9 +81,10 @@ export const useTetris = () => {
                         }
                     });
                 });
-                newBoard = clearFullLines(newBoard);
+                const { newBoard: updatedBoard, lineScore } = clearFullLines(newBoard);
+                latestScore.current += lineScore;
 
-                return newBoard;
+                return updatedBoard;
             });
 
             // Spawn new piece
@@ -110,6 +113,6 @@ export const useTetris = () => {
         }
     }, [piecePosition]);
 
-    return { board, activePiece, piecePosition, tick, rotate };
+    return { board, activePiece, piecePosition, tick, rotate, latestScore };
 };
 
