@@ -7,6 +7,7 @@ import { PieceRenderer } from "./pieces/PieceRenderer";
 import type { Controls } from "../utils/controlsMap";
 import { handleMoveLeft, handleMoveRight } from "../helpers/controlsBindings";
 import { canMoveLeft, canMoveRight } from "../helpers/constraints";
+import { useGameStateStore } from "../store/store";
 
 const MOVE_DELAY = 100; //ms
 const SOFT_DROP_SPEED_MULTIPLIER = 10_000;
@@ -16,23 +17,30 @@ const GameScene = () => {
   const { clock } = useThree();
   const timeRef = useRef(0);
   const pieceRef = useRef<THREE.Group>(null!);
+  const lastMoveTime = useRef(0);
   const [sub, get] = useKeyboardControls<Controls>()
+  const { isGamePaused, togglePause } = useGameStateStore();
+
   const { bounds, shape } = activePiece.tetromino.rotations[activePiece.rotationIndex]
 
   useEffect(() => {
     return sub(
-      (state) => state,
+      (state) => { return { rotate: state.rotate, pause: state.pause } },
       (pressed) => {
-        if (pressed.rotate) rotatePiece();
+        if (pressed.rotate && !isGamePaused) rotatePiece();
         if (pressed.pause) {
-          clock.running ? clock.stop() : clock.start()
+          if (clock.running) {
+            clock.stop()
+            togglePause();
+          } else {
+            clock.start()
+            togglePause();
+          }
           lastMoveTime.current = 0;
         };
       }
     )
-  }, [rotatePiece])
-
-  const lastMoveTime = useRef(0);
+  }, [rotatePiece, isGamePaused, clock])
 
   useFrame((_, delta) => {
     const { moveLeft, moveRight, softDrop } = get()
@@ -50,7 +58,7 @@ const GameScene = () => {
       pieceRef.current.position.set(piecePosition.current.x, piecePosition.current.y, 0);
     }
 
-    if (currentTime - lastMoveTime.current > MOVE_DELAY && clock.running) {
+    if (currentTime - lastMoveTime.current > MOVE_DELAY && !isGamePaused) {
       if (moveRight && canMoveRight(piecePosition, bounds, shape, board)) {
         handleMoveRight(piecePosition);
         lastMoveTime.current = currentTime;

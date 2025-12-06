@@ -2,8 +2,9 @@ import { Canvas } from "@react-three/fiber";
 import GameScene from "./components/GameScene";
 import "./App.css";
 import { KeyboardControls, type KeyboardControlsEntry } from "@react-three/drei";
-import { useMemo } from "react";
+import { Activity, useMemo } from "react";
 import { controlsMap, type Controls } from "./utils/controlsMap";
+import { useGameStateStore } from "./store/store";
 
 function App() {
 
@@ -16,9 +17,13 @@ function App() {
     { name: controlsMap.pause, keys: ['p'] },
   ], [])
 
+  const isGamePaused = useGameStateStore((state) => state.isGamePaused);
+
   return (<>
     <div style={{ position: "relative" }} id="canvas-container">
-      <h1 id="paused-title" style={{ visibility: "hidden", position: "absolute", top: "40%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 10 }}>Paused</h1>
+      <Activity mode={isGamePaused ? "visible" : "hidden"}>
+        <h1 id="paused-title" style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 10 }}>Paused</h1>
+      </Activity>
       <KeyboardControls map={map}>
         <Canvas>
           <GameScene />
