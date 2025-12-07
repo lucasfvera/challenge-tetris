@@ -5,7 +5,7 @@ import { KeyboardControls, type KeyboardControlsEntry } from "@react-three/drei"
 import { Activity, useMemo } from "react";
 import { controlsMap, type Controls } from "./utils/controlsMap";
 import { useGameStateStore } from "./store/store";
-import { Score } from "./components/Score";
+import { Score } from "./components/ScoreBoard/Score";
 import { NextPiecePreview } from "./components/NextPiecePreview/NextPiecePreview";
 
 function App() {
