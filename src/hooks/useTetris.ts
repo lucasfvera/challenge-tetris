@@ -1,10 +1,10 @@
-import { useState, useCallback, useRef, useEffect } from "react";
-import { TETROMINOES, type Tetromino, pieceTypeMap, type PieceType } from "../utils/tetrominoes";
-import { BOARD_HEIGHT, BOARD_WIDTH, createEmptyBoard, type Board } from "../utils/board";
+import { useRef, useEffect } from "react";
+import { type Tetromino, type PieceType, createActivePiece } from "../utils/tetrominoes";
+import { BOARD_HEIGHT } from "../utils/board";
 import { randomPiece } from "../helpers/randomPiece";
 import { canRotate } from "../helpers/constraints";
-import { clearFullLines } from "../helpers/clearFullLines";
 import { useGameStateStore } from "../store/store";
+import { INITIAL_PIECE_POSITION } from "../settings/gameSettings";
 
 export interface IActivePiece {
     pos: { x: number; y: number };
@@ -14,38 +14,25 @@ export interface IActivePiece {
     collided: boolean;
 }
 
-const createActivePiece = (type: PieceType) => {
-    return {
-        pos: { x: BOARD_WIDTH / 2 - 1, y: BOARD_HEIGHT - 1 }, // Start at top, centered
-        tetromino: TETROMINOES[type],
-        type,
-        rotationIndex: 0,
-        collided: false,
-    };
-}
 
 export const useTetris = () => {
-    const [board, setBoard] = useState<Board>(createEmptyBoard());
-    const [activePiece, setActivePiece] = useState<IActivePiece>(createActivePiece(pieceTypeMap.O));
-
-    const latestScore = useRef(0);
-    const boardRef = useRef(board);
-    useEffect(() => {
-        boardRef.current = board;
-    }, [board]);
-    const piecePosition = useRef({ x: 0, y: BOARD_HEIGHT - 1 });
-    const activePieceRef = useRef(activePiece);
+    const activePiece = useGameStateStore((state) => (state.activePiece));
+    const setActivePiece = useGameStateStore((state) => (state.setActivePiece));
     const setNextPieceType = useGameStateStore((state) => (state.setNextPieceType));
     const nextPieceType = useGameStateStore((state) => (state.nextPieceType));
+    const board = useGameStateStore((state) => (state.board));
+    const updateBoardLines = useGameStateStore((state) => (state.updateBoardLines));
+
+    const latestScore = useRef(0);
+    const piecePosition = useRef(INITIAL_PIECE_POSITION);
 
     useEffect(() => {
-        activePieceRef.current = activePiece;
         piecePosition.current = activePiece.pos;
     }, [activePiece]);
 
     const tick = () => {
         const prevPos = piecePosition.current;
-        const currentPiece = activePieceRef.current;
+        const currentPiece = activePiece;
 
         if (currentPiece.collided) return;
 
@@ -55,7 +42,7 @@ export const useTetris = () => {
 
         // Check for collision with floor or other pieces
         let collided = false;
-        const currentBoard = boardRef.current;
+        const currentBoard = board;
 
         for (let row = 0; row < shape.length; row++) {
             for (let col = 0; col < shape[row].length; col++) {
@@ -73,27 +60,7 @@ export const useTetris = () => {
         }
 
         if (collided) {
-            // Lock the piece
-            setBoard((prevBoard) => {
-                // We declare it as let to indicate that is being mutated even though it is not being reassigned
-                //eslint-disable-next-line prefer-const
-                let newBoard = prevBoard.map((row) => [...row]);
-                shape.forEach((row, rowIndex) => {
-                    row.forEach((value, colIndex) => {
-                        if (value !== 0) {
-                            const boardY = prevPos.y + (shape.length - 1 - rowIndex);
-                            const boardX = prevPos.x + colIndex;
-                            if (boardY >= 0 && boardY < BOARD_HEIGHT && boardX >= 0 && boardX < BOARD_WIDTH) {
-                                newBoard[boardY][boardX] = currentPiece.tetromino.color;
-                            }
-                        }
-                    });
-                });
-                const { newBoard: updatedBoard, lineScore } = clearFullLines(newBoard);
-                latestScore.current += lineScore;
-
-                return updatedBoard;
-            });
+            updateBoardLines(currentPiece, piecePosition.current);
 
             // Spawn new piece
             setActivePiece(createActivePiece(nextPieceType));
@@ -105,22 +72,22 @@ export const useTetris = () => {
         }
     }
 
-    const rotate = useCallback(() => {
-        const currentPiece = activePieceRef.current;
+    const rotate = () => {
+        const currentPiece = activePiece;
         if (currentPiece.collided) return;
 
         const nextRotationIndex = (currentPiece.rotationIndex + 1) % 4;
         const nextShape = currentPiece.tetromino.rotations[nextRotationIndex].shape;
 
-        if (canRotate(piecePosition, nextShape, boardRef.current)) {
-            setActivePiece((prev) => ({
-                ...prev,
+        if (canRotate(piecePosition, nextShape, board)) {
+            setActivePiece({
+                ...currentPiece,
                 rotationIndex: nextRotationIndex,
                 pos: { x: piecePosition.current.x, y: piecePosition.current.y },
-            }));
+            });
         }
-    }, [piecePosition]);
+    }
 
-    return { board, activePiece, piecePosition, tick, rotate, latestScore };
+    return { board, piecePosition, tick, rotate, latestScore };
 };
 

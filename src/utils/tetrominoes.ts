@@ -1,3 +1,5 @@
+import { INITIAL_PIECE_POSITION } from "../settings/gameSettings";
+
 export type TetrominoColor = "cyan" | "blue" | "orange" | "yellow" | "green" | "mediumpurple" | "red";
 
 export interface TetrominoBounds {
@@ -108,3 +110,13 @@ export const randomTetromino = () => {
     const randKey = keys[Math.floor(Math.random() * keys.length)];
     return { type: randKey, tetromino: TETROMINOES[randKey] };
 };
+
+export const createActivePiece = (type: PieceType) => {
+    return {
+        pos: INITIAL_PIECE_POSITION,
+        tetromino: TETROMINOES[type],
+        type,
+        rotationIndex: 0,
+        collided: false,
+    };
+}

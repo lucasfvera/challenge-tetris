@@ -11,7 +11,7 @@ import { useGameStateStore } from "../store/store";
 import { BASE_SPEED, MOVE_DELAY, SOFT_DROP_SPEED } from "../settings/gameSettings";
 
 const GameScene = () => {
-  const { board, activePiece, tick, piecePosition, rotate: rotatePiece, latestScore } = useTetris();
+  const { board, tick, piecePosition, rotate: rotatePiece } = useTetris();
   const { clock } = useThree();
   const timeRef = useRef(0);
   const pieceRef = useRef<THREE.Group>(null!);
@@ -19,20 +19,24 @@ const GameScene = () => {
   const [sub, get] = useKeyboardControls<Controls>()
   const isGamePaused = useGameStateStore((state) => (state.isGamePaused));
   const togglePause = useGameStateStore((state) => (state.togglePause));
-  const setScore = useGameStateStore((state) => (state.setScore));
-  const score = useGameStateStore((state) => (state.score));
   const level = useGameStateStore((state) => (state.level));
-  const increaseLevel = useGameStateStore((state) => (state.increaseLevel));
+  const isGameOver = useGameStateStore((state) => (state.isGameOver));
+  const activePiece = useGameStateStore((state) => (state.activePiece));
 
   const { bounds, shape } = activePiece.tetromino.rotations[activePiece.rotationIndex]
 
   useEffect(() => {
 
+    // Check if we restarted the game and start the clock if so
+    if (!clock.running && !isGamePaused && !isGameOver) {
+      clock.start();
+    }
+
     return sub(
       (state) => { return { rotate: state.rotate, pause: state.pause } },
       (pressed) => {
-        if (pressed.rotate && !isGamePaused) rotatePiece();
-        if (pressed.pause) {
+        if (pressed.rotate && !isGamePaused && !isGameOver) rotatePiece();
+        if (pressed.pause && !isGameOver) {
           if (clock.running) {
             clock.stop()
             togglePause();
@@ -44,9 +48,18 @@ const GameScene = () => {
         };
       }
     )
-  }, [rotatePiece, isGamePaused, clock])
+  }, [rotatePiece, isGamePaused, isGameOver, clock])
+
+  // Stop clock when game is over
+  useEffect(() => {
+    if (isGameOver && clock.running) {
+      clock.stop();
+    }
+  }, [isGameOver, clock]);
 
   useFrame((_, delta) => {
+    if (isGameOver) return; // Prevent any game updates when game is over
+
     const { moveLeft, moveRight, softDrop } = get()
     const currentTime = clock.getElapsedTime() * 1000;
 
@@ -57,13 +70,6 @@ const GameScene = () => {
     if (timeRef.current > 1000) {
       tick();
       timeRef.current -= 1000;
-    }
-
-    if (score !== latestScore.current) {
-      setScore(latestScore.current);
-      if (latestScore.current % 10 === 0) {
-        increaseLevel();
-      }
     }
 
     // Imperative Update of Piece Position
