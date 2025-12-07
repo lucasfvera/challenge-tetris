@@ -85,7 +85,7 @@ const GameScene = () => {
     <>
       <gridHelper args={[20, 20]} position={[0.5, 0.5, 0]} rotation-x={Math.PI / 2} />
       <OrthographicCamera makeDefault zoom={40} position={[0.5, 0.5, 100]} />
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={1} />
 
       <group position={[-4, -9, 0]}>
         {/* Render Board */}

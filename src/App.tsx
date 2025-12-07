@@ -28,7 +28,7 @@ function App() {
           <h1 id="paused-title" style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 10 }}>Paused</h1>
         </Activity>
         <KeyboardControls map={map}>
-          <Canvas>
+          <Canvas style={{ backgroundColor: "black" }}>
             <GameScene />
           </Canvas>
         </KeyboardControls>
