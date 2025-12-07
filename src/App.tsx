@@ -6,6 +6,7 @@ import { Activity, useMemo } from "react";
 import { controlsMap, type Controls } from "./utils/controlsMap";
 import { useGameStateStore } from "./store/store";
 import { Score } from "./components/Score";
+import { NextPiecePreview } from "./components/NextPiecePreview/NextPiecePreview";
 
 function App() {
 
@@ -32,7 +33,10 @@ function App() {
           </Canvas>
         </KeyboardControls>
       </div>
-      <Score />
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <NextPiecePreview />
+        <Score />
+      </div>
     </div>
   );
 }
