@@ -1,10 +1,11 @@
 import { create } from 'zustand'
 import type { PieceType } from '../utils/tetrominoes';
+import { randomPiece } from '../helpers/randomPiece';
 
 interface GameStateStore {
     level: number;
     isGamePaused: boolean;
-    nextPieceType: PieceType | null;
+    nextPieceType: PieceType;
     score: number;
     increaseLevel: () => void;
     togglePause: () => void;
@@ -15,7 +16,7 @@ interface GameStateStore {
 export const useGameStateStore = create<GameStateStore>((set) => ({
     level: 0,
     isGamePaused: false,
-    nextPieceType: null,
+    nextPieceType: randomPiece().type,
     score: 0,
     increaseLevel: () => set((state) => ({ level: state.level + 1 })),
     togglePause: () => set((state) => ({ isGamePaused: !state.isGamePaused })),

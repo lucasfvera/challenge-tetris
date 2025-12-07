@@ -4,6 +4,7 @@ import { BOARD_HEIGHT, BOARD_WIDTH, createEmptyBoard, type Board } from "../util
 import { randomPiece } from "../helpers/randomPiece";
 import { canRotate } from "../helpers/constraints";
 import { clearFullLines } from "../helpers/clearFullLines";
+import { useGameStateStore } from "../store/store";
 
 export interface IActivePiece {
     pos: { x: number; y: number };
@@ -13,15 +14,19 @@ export interface IActivePiece {
     collided: boolean;
 }
 
-export const useTetris = () => {
-    const [board, setBoard] = useState<Board>(createEmptyBoard());
-    const [activePiece, setActivePiece] = useState<IActivePiece>({
-        pos: { x: 0, y: BOARD_HEIGHT - 1 }, // Start at top, centered
-        tetromino: TETROMINOES[pieceTypeMap.O],
-        type: pieceTypeMap.O,
+const createActivePiece = (type: PieceType) => {
+    return {
+        pos: { x: BOARD_WIDTH / 2 - 1, y: BOARD_HEIGHT - 1 }, // Start at top, centered
+        tetromino: TETROMINOES[type],
+        type,
         rotationIndex: 0,
         collided: false,
-    });
+    };
+}
+
+export const useTetris = () => {
+    const [board, setBoard] = useState<Board>(createEmptyBoard());
+    const [activePiece, setActivePiece] = useState<IActivePiece>(createActivePiece(pieceTypeMap.O));
 
     const latestScore = useRef(0);
     const boardRef = useRef(board);
@@ -30,14 +35,15 @@ export const useTetris = () => {
     }, [board]);
     const piecePosition = useRef({ x: 0, y: BOARD_HEIGHT - 1 });
     const activePieceRef = useRef(activePiece);
-    const nextPieceRef = useRef(randomPiece());
+    const setNextPieceType = useGameStateStore((state) => (state.setNextPieceType));
+    const nextPieceType = useGameStateStore((state) => (state.nextPieceType));
 
     useEffect(() => {
         activePieceRef.current = activePiece;
         piecePosition.current = activePiece.pos;
     }, [activePiece]);
 
-    const tick = useCallback(() => {
+    const tick = () => {
         const prevPos = piecePosition.current;
         const currentPiece = activePieceRef.current;
 
@@ -90,14 +96,14 @@ export const useTetris = () => {
             });
 
             // Spawn new piece
-            setActivePiece(nextPieceRef.current);
-            nextPieceRef.current = randomPiece();
+            setActivePiece(createActivePiece(nextPieceType));
+            setNextPieceType(randomPiece().type);
             // Position ref will be updated by the useEffect above
         } else {
             // Update position ref
             piecePosition.current = { x: prevPos.x, y: newY };
         }
-    }, []);
+    }
 
     const rotate = useCallback(() => {
         const currentPiece = activePieceRef.current;
@@ -115,6 +121,6 @@ export const useTetris = () => {
         }
     }, [piecePosition]);
 
-    return { board, activePiece, nextPieceType: nextPieceRef.current.type, piecePosition, tick, rotate, latestScore };
+    return { board, activePiece, piecePosition, tick, rotate, latestScore };
 };
 
