@@ -14,7 +14,7 @@ interface GameStateStore {
 }
 
 export const useGameStateStore = create<GameStateStore>((set) => ({
-    level: 0,
+    level: 1,
     isGamePaused: false,
     nextPieceType: randomPiece().type,
     score: 0,

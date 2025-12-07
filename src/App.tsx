@@ -7,6 +7,7 @@ import { controlsMap, type Controls } from "./utils/controlsMap";
 import { useGameStateStore } from "./store/store";
 import { Score } from "./components/ScoreBoard/Score";
 import { NextPiecePreview } from "./components/NextPiecePreview/NextPiecePreview";
+import { Level } from "./components/ScoreBoard/Level";
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <NextPiecePreview />
+        <Level />
         <Score />
       </div>
     </div>

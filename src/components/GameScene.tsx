@@ -8,7 +8,7 @@ import type { Controls } from "../utils/controlsMap";
 import { handleMoveLeft, handleMoveRight } from "../helpers/controlsBindings";
 import { canMoveLeft, canMoveRight } from "../helpers/constraints";
 import { useGameStateStore } from "../store/store";
-import { MOVE_DELAY, SOFT_DROP_SPEED_MULTIPLIER } from "../settings/gameSettings";
+import { BASE_SPEED, MOVE_DELAY, SOFT_DROP_SPEED } from "../settings/gameSettings";
 
 const GameScene = () => {
   const { board, activePiece, tick, piecePosition, rotate: rotatePiece, latestScore } = useTetris();
@@ -21,6 +21,8 @@ const GameScene = () => {
   const togglePause = useGameStateStore((state) => (state.togglePause));
   const setScore = useGameStateStore((state) => (state.setScore));
   const score = useGameStateStore((state) => (state.score));
+  const level = useGameStateStore((state) => (state.level));
+  const increaseLevel = useGameStateStore((state) => (state.increaseLevel));
 
   const { bounds, shape } = activePiece.tetromino.rotations[activePiece.rotationIndex]
 
@@ -49,14 +51,19 @@ const GameScene = () => {
     const currentTime = clock.getElapsedTime() * 1000;
 
     // Game Loop Tick
-    timeRef.current += delta * 1000;
-    if (timeRef.current > 200) {
+    const speed = softDrop ? SOFT_DROP_SPEED : BASE_SPEED * level;
+    timeRef.current += delta * speed;
+
+    if (timeRef.current > 1000) {
       tick();
-      timeRef.current -= 200;
+      timeRef.current -= 1000;
     }
 
     if (score !== latestScore.current) {
       setScore(latestScore.current);
+      if (latestScore.current % 10 === 0) {
+        increaseLevel();
+      }
     }
 
     // Imperative Update of Piece Position
@@ -73,10 +80,6 @@ const GameScene = () => {
         handleMoveLeft(piecePosition);
         lastMoveTime.current = currentTime;
       }
-    }
-
-    if (softDrop) {
-      timeRef.current += delta * SOFT_DROP_SPEED_MULTIPLIER;
     }
 
   });
