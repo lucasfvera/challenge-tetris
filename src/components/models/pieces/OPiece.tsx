@@ -1,6 +1,7 @@
 import React from "react";
 import { Group } from "three";
 import { TETROMINOES, pieceTypeMap } from "../../../utils/tetrominoes";
+import { BaseBlock } from "./BaseBlock";
 
 interface OPieceProps {
   position?: [number, number, number];
@@ -17,10 +18,11 @@ const OPiece = ({ position = [0, 0, 0], color = "yellow", rotationIndex }: OPiec
       {shape.map((row, rowIndex) =>
         row.map((cell, colIndex) =>
           cell ? (
-            <mesh key={`${rowIndex}-${colIndex}`} position={[colIndex, shape.length - 1 - rowIndex, 0]}>
-              <planeGeometry args={[1, 1]} />
-              <meshStandardMaterial color={color} />
-            </mesh>
+            <BaseBlock
+              key={`${rowIndex}-${colIndex}`}
+              position={[colIndex, shape.length - 1 - rowIndex, 0]}
+              color={color}
+            />
           ) : null
         )
       )}
