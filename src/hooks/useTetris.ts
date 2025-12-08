@@ -1,10 +1,9 @@
 import { useRef, useEffect } from "react";
 import { type Tetromino, type PieceType, createActivePiece } from "../utils/tetrominoes";
-import { BOARD_HEIGHT } from "../utils/board";
 import { randomPiece } from "../helpers/randomPiece";
 import { canRotate } from "../helpers/constraints";
 import { useGameStateStore } from "../store/store";
-import { INITIAL_PIECE_POSITION } from "../settings/gameSettings";
+import { INITIAL_PIECE_POSITION, BOARD_HEIGHT } from "../settings/gameSettings";
 
 export interface IActivePiece {
     pos: { x: number; y: number };

@@ -1,5 +1,5 @@
 import type { IActivePiece } from "../hooks/useTetris";
-import { BOARD_HEIGHT } from "../utils/board";
+import { BOARD_HEIGHT } from "../settings/gameSettings";
 import { randomTetromino } from "../utils/tetrominoes";
 
 export const randomPiece = (): IActivePiece => {

@@ -1,8 +1,6 @@
 import { clearFullLines } from "../helpers/clearFullLines";
 import type { IActivePiece } from "../hooks/useTetris";
-
-export const BOARD_WIDTH = 10;
-export const BOARD_HEIGHT = 20;
+import { BOARD_HEIGHT, BOARD_WIDTH } from "../settings/gameSettings";
 
 export type Board = (string | null)[][];
 

@@ -1,5 +1,6 @@
 import type { RefObject } from "react";
-import { BOARD_WIDTH, BOARD_HEIGHT, type Board } from "../utils/board";
+import { BOARD_WIDTH, BOARD_HEIGHT } from "../settings/gameSettings";
+import type { Board } from "../utils/board";
 import type { TetrominoBounds } from "../utils/tetrominoes";
 
 export const canMoveLeft = (piecePosition: RefObject<{ x: number; y: number }>, bounds: TetrominoBounds, shape: number[][], board: Board) => {
