@@ -17,6 +17,7 @@ export const updateBoard = (previousBoard: Board, targetPiece: IActivePiece, lat
     let newBoard = previousBoard.map((row) => [...row]);
     const targetPieceShape = targetPiece.tetromino.rotations[targetPiece.rotationIndex].shape;
 
+    let canSpawn = true;
     targetPieceShape.forEach((row, rowIndex) => {
         row.forEach((value, colIndex) => {
             if (value !== 0) {
@@ -26,7 +27,7 @@ export const updateBoard = (previousBoard: Board, targetPiece: IActivePiece, lat
                     newBoard[boardY][boardX] = targetPiece.tetromino.color;
                     if (previousBoard[boardY][boardX]) {
                         // Track that we cannot spawn another piece (game over)
-                        // canSpawn = false;
+                        canSpawn = false;
                     }
                 }
             }
@@ -34,5 +35,5 @@ export const updateBoard = (previousBoard: Board, targetPiece: IActivePiece, lat
     });
     const { newBoard: updatedBoard, lineScore } = clearFullLines(newBoard);
 
-    return { updatedBoard, lineScore };
+    return { updatedBoard, lineScore, canSpawn };
 }

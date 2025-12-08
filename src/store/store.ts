@@ -32,7 +32,7 @@ export const useGameStateStore = create<GameStateStore>((set) => ({
     score: 0,
     board: createEmptyBoard(),
     updateBoardLines: (activePiece, latestPiecePosition) => set((state) => {
-        const { updatedBoard, lineScore } = updateBoard(state.board, activePiece, latestPiecePosition)
+        const { updatedBoard, lineScore, canSpawn } = updateBoard(state.board, activePiece, latestPiecePosition)
         const latestScore = state.score + lineScore
         if (latestScore >= state.level * SCORE_PER_LEVEL) {
             const newLevel = Math.floor(latestScore / SCORE_PER_LEVEL) + INITIAL_LEVEL;
@@ -41,7 +41,8 @@ export const useGameStateStore = create<GameStateStore>((set) => ({
 
         return {
             board: updatedBoard,
-            score: state.score + lineScore
+            score: state.score + lineScore,
+            isGameOver: !canSpawn
         }
     }),
     increaseLevel: (newLevel: number) => set(() => ({ level: newLevel })),
