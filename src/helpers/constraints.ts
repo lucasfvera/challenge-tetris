@@ -87,11 +87,14 @@ export const canRotate = (piecePosition: RefObject<{ x: number; y: number }>, ne
     const currentX = piecePosition.current.x;
     const currentY = piecePosition.current.y;
 
-    for (let row = 0; row < nextShape.length; row++) {
-        for (let col = 0; col < nextShape[row].length; col++) {
+    const numberOfRows = nextShape.length;
+
+    for (let row = 0; row < numberOfRows; row++) {
+        const numberOfColumns = nextShape[row].length;
+        for (let col = 0; col < numberOfColumns; col++) {
             if (nextShape[row][col] !== 0) {
                 const boardX = currentX + col;
-                const boardY = currentY + (nextShape.length - 1 - row);
+                const boardY = currentY + (numberOfRows - 1 - row);
 
                 // 1. Wall Collision
                 if (boardX < 0 || boardX >= BOARD_WIDTH) {
