@@ -14,7 +14,7 @@ function App() {
   const [camera, setCamera] = useState<'orto' | 'pers'>('orto');
 
   return (
-    <div style={{ display: "flex", gap: "2rem" }}>
+    <div style={{ display: "flex", gap: "2rem", justifyContent: "center" }}>
       <div style={{ position: "relative" }} id="canvas-container">
         <GameMenu />
         <KeyboardControls map={controlsMap}>

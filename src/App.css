@@ -1,8 +1,7 @@
 #canvas-container {
   width: 400px;
   height: 800px;
-  margin: 0 auto; /* Centers the container horizontally */
-  display: flex; /* Use flexbox to center the canvas if it doesn't take full container space */
+  display: flex;
   justify-content: center;
   align-items: center;
 }
