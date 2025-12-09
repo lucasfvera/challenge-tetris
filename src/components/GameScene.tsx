@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { OrthographicCamera, useKeyboardControls } from "@react-three/drei";
+import { OrbitControls, OrthographicCamera, PerspectiveCamera, useKeyboardControls } from "@react-three/drei";
 import { useTetris } from "../hooks/useTetris";
 import { PieceRenderer } from "./PieceRenderer";
 import type { Controls } from "../utils/controlsMap";
@@ -11,7 +11,7 @@ import { useGameStateStore } from "../store/store";
 import { BASE_SPEED, MOVE_DELAY, SOFT_DROP_SPEED } from "../settings/gameSettings";
 import { BaseBlock } from "./models/pieces/BaseBlock";
 
-const GameScene = () => {
+const GameScene = ({ camera }: { camera: 'orto' | 'pers' }) => {
   const { board, tick, piecePosition, rotate: rotatePiece } = useTetris();
   const { clock } = useThree();
   const timeRef = useRef(0);
@@ -93,9 +93,12 @@ const GameScene = () => {
 
   return (
     <>
-      <gridHelper args={[20, 20]} position={[0.5, 0.5, 0]} rotation-x={Math.PI / 2} />
-      <OrthographicCamera makeDefault zoom={40} position={[0.5, 0.5, 100]} />
+      {/* <gridHelper args={[20, 20]} position={[0.5, 0.5, 0]} rotation-x={Math.PI / 2} /> */}
+      {camera === 'orto' && <OrthographicCamera makeDefault zoom={33} position={[0.5, 0.5, 100]} />}
+      {camera === 'pers' && <PerspectiveCamera makeDefault aspect={400 / 800} fov={75} near={0.1} far={500} zoom={6} position={[-10, 45, 100]} />}
       <ambientLight intensity={1} />
+      <directionalLight position={[0.5, 50, 100]} />
+      <OrbitControls enabled={false} />
 
       <group position={[-5, -9, 0]}>
         {Array(20).fill("t").map((_, index) =>

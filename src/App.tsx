@@ -7,16 +7,19 @@ import { Score } from "./components/ScoreBoard/Score";
 import { NextPiecePreview } from "./components/NextPiecePreview/NextPiecePreview";
 import { Level } from "./components/ScoreBoard/Level";
 import { GameMenu } from "./components/GameMenu/GameMenu";
+import { useState } from "react";
 
 function App() {
+
+  const [camera, setCamera] = useState<'orto' | 'pers'>('orto');
 
   return (
     <div style={{ display: "flex", gap: "2rem" }}>
       <div style={{ position: "relative" }} id="canvas-container">
         <GameMenu />
         <KeyboardControls map={controlsMap}>
-          <Canvas style={{ backgroundColor: "black" }}>
-            <GameScene />
+          <Canvas style={{ backgroundColor: "#0A0A0A" }}>
+            <GameScene camera={camera} />
           </Canvas>
         </KeyboardControls>
       </div>
@@ -24,6 +27,7 @@ function App() {
         <NextPiecePreview />
         <Level />
         <Score />
+        <button className="primary-button" onClick={() => setCamera(prev => prev === 'orto' ? 'pers' : 'orto')}>Toggle camera</button>
       </div>
     </div>
   );
