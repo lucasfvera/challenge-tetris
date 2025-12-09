@@ -3,13 +3,15 @@ interface BaseBlockProps {
     filled?: boolean;
 }
 
+export const BLOCK_SIZE = 30;
+
 export const BaseBlock = ({ color, filled = false }: BaseBlockProps) => {
     return (
         <div
             style={{
                 boxSizing: "border-box",
-                width: "20px",
-                height: "20px",
+                width: BLOCK_SIZE,
+                height: BLOCK_SIZE,
                 backgroundColor: filled && color ? color : "transparent",
                 border: filled ? "1px solid rgba(0, 0, 0, 0.2)" : "none",
             }}
