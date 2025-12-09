@@ -10,24 +10,24 @@ The goal of this challenge is to build the classic Tetris game. You can find all
 
 ### Decisions
 
-**Use plain React with Vite**/
+**Use plain React with Vite**
 Since we are building a tetris game, we don't need any server features (or at least nothing too complex). For that reason, setting up the project with Vite is good enough for now.
 We can migrate to any framework if needed later, but there is no need to add extra complexity for now.
 
-**Rotation mechanics**/
+**Rotation mechanics**
 I implemented a basic logic of rotation. Initially I thought about rotating the pieces on demand, but since we have a limited number of pieces and rotations, we can easily store all the rotations in memory and rotate them as needed, saving time and computing power.
 
-**Components Directory**/
+**Components Directory**
 I choose a feature based approach to organize the components for simplicity. Even though I'm a fan of Atomic Design approach, I felt that it was not necessary for this challenge since the components we were building were not being reused across the app (at least for now).
 
-**Scene Elements**/
+**Scene Elements**
 To ensure we only use the scene to render the minimum as possible, I use global state to track things like next piece, score and level to be able to render them outside of the scene.
 
-**Game State: Zustand**/
+**Game State: Zustand**
 To handle game state outside of the scene, I added a global store with Zustand. This gives us flexibility on how to update the state and where to show it.
 
-**Preserve State**/
-One of the requirements was to keep the game state when refreshing the page. Even though it said to implement it with a Backend service (built with Python and PostgreSQL) this was over-engineering the solution. For this use case, I'm preserving the game state in the user's local memory./
+**Preserve State**
+One of the requirements was to keep the game state when refreshing the page. Even though it said to implement it with a Backend service (built with Python and PostgreSQL) this was over-engineering the solution. For this use case, I'm preserving the game state in the user's local memory.
 We could analyze if we need a backend or not to build it. For instance, one valid reason to leverage building the BE would be having the base structure to implement the "save game" feature next.
 
 ### Trade-offs
@@ -58,13 +58,13 @@ $ npm run dev
 
 ### Next Steps
 
-**Rotation logic**/
+**Rotation logic**
 Is not the same as classic tetris. Right now, you cannot rotate on the borders of the screen. There is also a known issue where if you rotate while moving the piece, it looks snappy.
 
-**Missing Features**/
+**Missing Features**
 There are still lots of improvements related to the gameplay. To name some of those: max score tracking, hold piece, hard drop, etc.
 
-**Music**/
+**Music**
 
 
 ### AI Usage
