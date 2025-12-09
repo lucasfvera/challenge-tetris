@@ -4,6 +4,7 @@ import { randomPiece } from '../helpers/randomPiece';
 import { createEmptyBoard, type Board, updateBoard } from '../utils/board';
 import { type IActivePiece } from '../hooks/useTetris';
 import { INITIAL_LEVEL, SCORE_PER_LEVEL } from '../settings/gameSettings';
+import { persist } from 'zustand/middleware';
 
 interface GameStateStore {
     level: number;
@@ -23,7 +24,7 @@ interface GameStateStore {
     resetGame: () => void;
 }
 
-export const useGameStateStore = create<GameStateStore>((set) => ({
+export const useGameStateStore = create<GameStateStore>()(persist((set) => ({
     level: 1,
     isGamePaused: false,
     isGameOver: false,
@@ -52,4 +53,4 @@ export const useGameStateStore = create<GameStateStore>((set) => ({
     setScore: (score) => set({ score }),
     setGameOver: (isGameOver) => set({ isGameOver }),
     resetGame: () => set(() => ({ level: 1, score: 0, isGameOver: false, isGamePaused: false, activePiece: createActivePiece(randomPiece().type), nextPieceType: randomPiece().type, board: createEmptyBoard() })),
-}))
+}), { name: "gameState" }))
