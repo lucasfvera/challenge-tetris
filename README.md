@@ -1,6 +1,6 @@
 # Vinci challenge
 
-This repository serves to store the coding challenge for Vinci client.
+This repository serves to store the coding challenge of building a 3D Tetris game for Vinci client.
 
 ## Option B - Tetris
 
@@ -18,11 +18,17 @@ We can migrate to any framework if needed later, but there is no need to add ext
 I implemented a basic logic of rotation. Initially I thought about rotating the pieces on demand, but since we have a limited number of pieces and rotations, we can easily store all the rotations in memory and rotate them as needed, saving time and computing power.
 
 **Components Directory**/
-I choosed a feature based approach to organize the components for simplicity. Even though I'm a fan of Atomic Design approach, I felt that it was not necessary for this challenge since the components we were building were not being reused across the app (at least for now).
+I choose a feature based approach to organize the components for simplicity. Even though I'm a fan of Atomic Design approach, I felt that it was not necessary for this challenge since the components we were building were not being reused across the app (at least for now).
 
 **Scene Elements**/
-To ensure we only use the scene to render the minimun as possible, I use global state to track things like next piece, score and level to be able to render them outside of the scene.
+To ensure we only use the scene to render the minimum as possible, I use global state to track things like next piece, score and level to be able to render them outside of the scene.
 
+**Game State: Zustand**/
+To handle game state outside of the scene, I added a global store with Zustand. This gives us flexibility on how to update the state and where to show it.
+
+**Preserve State**/
+One of the requirements was to keep the game state when refreshing the page. Even though it said to implement it with a Backend service (built with Python and PostgreSQL) this was over-engineering the solution. For this use case, I'm preserving the game state in the user's local memory./
+We could analyze if we need a backend or not to build it. For instance, one valid reason to leverage building the BE would be having the base structure to implement the "save game" feature next.
 
 ### Trade-offs
 - To avoid overcomplicating the styling, I used inline styles and some css classes. Ideally we would have something like Tailwind installed.
@@ -37,7 +43,7 @@ $ git clone https://github.com/ekumenlabs/vinci_lucas_ferreyra.git
 
 Then navigate to the project directory:
 ```bash
-$ cd vinci_challenge
+$ cd vinci_lucas_ferreyra
 ```
 
 Install dependencies:
@@ -54,6 +60,11 @@ $ npm run dev
 
 **Rotation logic**/
 Is not the same as classic tetris. Right now, you cannot rotate on the borders of the screen. There is also a known issue where if you rotate while moving the piece, it looks snappy.
+
+**Missing Features**/
+There are still lots of improvements related to the gameplay. To name some of those: max score tracking, hold piece, hard drop, etc.
+
+**Music**/
 
 
 ### AI Usage
