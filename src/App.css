@@ -2,7 +2,6 @@
   width: 400px;
   height: 800px;
   margin: 0 auto; /* Centers the container horizontally */
-  border: 1px solid #ccc; /* Add a border to visualize the container */
   display: flex; /* Use flexbox to center the canvas if it doesn't take full container space */
   justify-content: center;
   align-items: center;

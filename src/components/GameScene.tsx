@@ -9,6 +9,7 @@ import { handleMoveLeft, handleMoveRight } from "../helpers/controlsBindings";
 import { canMoveLeft, canMoveRight } from "../helpers/constraints";
 import { useGameStateStore } from "../store/store";
 import { BASE_SPEED, MOVE_DELAY, SOFT_DROP_SPEED } from "../settings/gameSettings";
+import { BaseBlock } from "./models/pieces/BaseBlock";
 
 const GameScene = () => {
   const { board, tick, piecePosition, rotate: rotatePiece } = useTetris();
@@ -96,15 +97,21 @@ const GameScene = () => {
       <OrthographicCamera makeDefault zoom={40} position={[0.5, 0.5, 100]} />
       <ambientLight intensity={1} />
 
-      <group position={[-4, -9, 0]}>
+      <group position={[-5, -9, 0]}>
+        {Array(20).fill("t").map((_, index) =>
+          <BaseBlock key={`-1-${index}`} position={[-1, index, 0]} color={"whitesmoke"} />
+        )}
+        {Array(20).fill("t").map((_, index) =>
+          <BaseBlock key={`10-${index}`} position={[10, index, 0]} color={"whitesmoke"} />
+        )}
+        {Array(12).fill("t").map((_, index) =>
+          <BaseBlock key={`${index}-20`} position={[index - 1, -1, 0]} color={"whitesmoke"} />
+        )}
         {/* Render Board */}
         {board.map((row, y) =>
           row.map((color, x) =>
             color ? (
-              <mesh key={`${x}-${y}`} position={[x, y, 0]}>
-                <planeGeometry args={[1, 1]} />
-                <meshStandardMaterial color={color} />
-              </mesh>
+              <BaseBlock key={`${x}-${y}`} position={[x, y, 0]} color={color} />
             ) : null
           )
         )}
