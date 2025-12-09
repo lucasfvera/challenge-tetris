@@ -3,6 +3,32 @@ import { BOARD_WIDTH, BOARD_HEIGHT } from "../settings/gameSettings";
 import type { Board } from "../utils/board";
 import type { TetrominoBounds } from "../utils/tetrominoes";
 
+export const isCollided = (
+    piecePosition: { x: number; y: number },
+    shape: number[][],
+    board: Board
+) => {
+    for (let row = 0; row < shape.length; row++) {
+        for (let col = 0; col < shape[row].length; col++) {
+            if (shape[row][col] !== 0) {
+                const boardX = piecePosition.x + col;
+                const boardY = piecePosition.y + (shape.length - 1 - row);
+
+                if (
+                    boardX < 0 ||
+                    boardX >= BOARD_WIDTH ||
+                    boardY < 0 ||
+                    (boardY < BOARD_HEIGHT && board[boardY][boardX])
+                ) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+};
+
+
 export const canMoveLeft = (piecePosition: RefObject<{ x: number; y: number }>, bounds: TetrominoBounds, shape: number[][], board: Board) => {
     // 1. Wall Collision
     if (piecePosition.current.x + bounds.minCol <= 0) return false;

@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { type Tetromino, type PieceType, createActivePiece } from "../utils/tetrominoes";
 import { randomPiece } from "../helpers/randomPiece";
-import { canRotate } from "../helpers/constraints";
+import { canRotate, isCollided } from "../helpers/constraints";
 import { useGameStateStore } from "../store/store";
 import { INITIAL_PIECE_POSITION, BOARD_HEIGHT } from "../settings/gameSettings";
 
@@ -21,6 +21,7 @@ export const useTetris = () => {
     const nextPieceType = useGameStateStore((state) => (state.nextPieceType));
     const board = useGameStateStore((state) => (state.board));
     const updateBoardLines = useGameStateStore((state) => (state.updateBoardLines));
+    const setGameOver = useGameStateStore((state) => (state.setGameOver));
 
     const latestScore = useRef(0);
     const piecePosition = useRef(INITIAL_PIECE_POSITION);
@@ -61,8 +62,15 @@ export const useTetris = () => {
         if (collided) {
             updateBoardLines(currentPiece, piecePosition.current);
 
+            // Check game over
+            const newPiece = createActivePiece(nextPieceType)
+            if (isCollided(newPiece.pos, newPiece.tetromino.rotations[newPiece.rotationIndex].shape, board)) {
+                setGameOver(true);
+                return;
+            }
+
             // Spawn new piece
-            setActivePiece(createActivePiece(nextPieceType));
+            setActivePiece(newPiece);
             setNextPieceType(randomPiece().type);
             // Position ref will be updated by the useEffect above
         } else {
