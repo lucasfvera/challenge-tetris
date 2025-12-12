@@ -6,8 +6,9 @@ import { controlsMap } from "./utils/controlsMap";
 import { Score } from "./components/ScoreBoard/Score";
 import { NextPiecePreview } from "./components/NextPiecePreview/NextPiecePreview";
 import { Level } from "./components/ScoreBoard/Level";
-import { GameMenu } from "./components/GameMenu/GameMenu";
-import { useState } from "react";
+import { useState, lazy } from "react";
+
+const GameMenu = lazy(() => import("./components/GameMenu/GameMenu").then((module) => ({ default: module.GameMenu })));
 
 function App() {
 
