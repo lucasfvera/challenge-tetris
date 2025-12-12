@@ -8,7 +8,7 @@ export const PauseMenu = () => {
         <h1>Paused</h1>
         <button
             onClick={resetGame}
-            className="primary-button"
+            className="button destroy-button"
         >
             Restart
         </button>

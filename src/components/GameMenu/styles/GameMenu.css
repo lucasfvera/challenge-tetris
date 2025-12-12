@@ -1,14 +1,28 @@
-.primary-button {
+/* These clases should be composable with something like class variance authority */
+
+.button {
     padding: 0.75rem 2rem;
     font-size: 1.2rem;
-    background-color: #4CAF50;
-    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
 }
 
-.primary-button:hover {
+.success-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.success-button:hover {
     background-color: #45a049;
+}
+
+.destroy-button {
+    background-color: #b03333;
+    color: white;
+}
+
+.destroy-button:hover {
+    background-color: #a02323;
 }

@@ -28,7 +28,7 @@ function App() {
         <NextPiecePreview />
         <Level />
         <Score />
-        <button className="primary-button" onClick={() => setCamera(prev => prev === 'orto' ? 'pers' : 'orto')}>Toggle camera</button>
+        <button className="button success-button" onClick={() => setCamera(prev => prev === 'orto' ? 'pers' : 'orto')}>Toggle camera</button>
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ export const GameOverMenu = () => {
         <p style={{ color: "white", fontSize: "1.5rem", marginBottom: "1.5rem" }}>Final Score: {score}</p>
         <button
             onClick={resetGame}
-            className="primary-button"
+            className="button success-button"
         >
             Restart
         </button>
