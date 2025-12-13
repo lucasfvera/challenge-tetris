@@ -1,3 +1,5 @@
 export const ENDPOINTS = {
-    SAVE_GAME_STATE: "/save-game-state",
+    USER: {
+        GAME_STATE: "/user/game-state",
+    }
 }

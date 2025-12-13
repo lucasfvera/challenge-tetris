@@ -6,14 +6,17 @@ import { type IActivePiece } from '../hooks/useTetris';
 import { INITIAL_LEVEL, SCORE_PER_LEVEL } from '../settings/gameSettings';
 import { persist } from 'zustand/middleware';
 
-interface GameStateStore {
-    level: number;
-    isGamePaused: boolean;
-    isGameOver: boolean;
+interface UserGameState {
     activePiece: IActivePiece;
+    board: Board;
+    level: number;
     nextPieceType: PieceType;
     score: number;
-    board: Board;
+}
+
+interface GameStateStore extends UserGameState {
+    isGamePaused: boolean;
+    isGameOver: boolean;
     updateBoardLines: (activePiece: IActivePiece, latestPiecePosition: { x: number; y: number }) => void;
     increaseLevel: (newLevel: number) => void;
     togglePause: () => void;
@@ -22,6 +25,7 @@ interface GameStateStore {
     setScore: (score: number) => void;
     setGameOver: (isGameOver: boolean) => void;
     resetGame: () => void;
+    loadGameState: (loadedState: UserGameState) => void;
 }
 
 export const useGameStateStore = create<GameStateStore>()(persist((set) => ({
@@ -52,4 +56,5 @@ export const useGameStateStore = create<GameStateStore>()(persist((set) => ({
     setScore: (score) => set({ score }),
     setGameOver: (isGameOver) => set({ isGameOver }),
     resetGame: () => set(() => ({ level: 1, score: 0, isGameOver: false, isGamePaused: false, activePiece: createActivePiece(randomPiece().type), nextPieceType: randomPiece().type, board: createEmptyBoard() })),
+    loadGameState: (loadedState: UserGameState) => set((state) => ({ ...state, ...loadedState })),
 }), { name: "gameState" }))
