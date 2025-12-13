@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .models.GameState import GameState
-from .settings.cors_origins import cors_origins
+from server.settings.cors_origins import cors_origins
+from server.api import main
 
 app = FastAPI()
 
@@ -14,11 +14,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
-
-@app.put("/user/game-state")
-async def game_state(state: GameState):
-    return {"state": state}
+# We could add a prefix to version the API like /v1
+app.include_router(main.api_router)
