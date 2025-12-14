@@ -1,5 +1,6 @@
 import { ENDPOINTS } from "./endpoints";
 import { useGameStateStore } from "../../store/store";
+import { type GameStatePayload } from "./types";
 
 const GAME_SERVICE_BASE_URL = "http://localhost:8000";
 
@@ -12,12 +13,18 @@ class GameServiceApi {
     }
 
     async saveGameState() {
-        const { activePiece, board, level, nextPieceType, score } = useGameStateStore.getState();
-        const dataToSave = {
-            activePiece,
+        const { activePiece, board, level, nextPieceType, score, sessionId } = useGameStateStore.getState();
+
+        // If the user has a sessionId, they already saved the game once and we will use that same "session" to store new game saves.
+        const dataToSave: GameStatePayload = {
+            id: sessionId ? sessionId : undefined,
+            active_piece_type: activePiece.type,
+            active_piece_x: activePiece.pos.x,
+            active_piece_y: activePiece.pos.y,
+            active_piece_rotation: activePiece.rotationIndex,
             board,
             level,
-            nextPieceType,
+            next_piece_type: nextPieceType,
             score
         }
 
@@ -45,9 +52,9 @@ class GameServiceApi {
 
     }
 
-    async loadGameState() {
+    async loadGameState(sessionId: string) {
         try {
-            const response = await fetch(`${this.baseUrl}${ENDPOINTS.USER.GAME_STATE}`);
+            const response = await fetch(`${this.baseUrl}${ENDPOINTS.USER.GAME_STATE}/${sessionId}`);
             if (!response.ok) {
                 throw new Error("Failed to load game state");
             }

@@ -5,13 +5,18 @@ import GameServiceApi from "../../api/gameService/gameService"
 export const PauseMenu = () => {
     const resetGame = useGameStateStore((state) => state.resetGame);
     const loadGameState = useGameStateStore((state) => state.loadGameState);
+    const sessionId = useGameStateStore((state) => state.sessionId);
+    const setSessionId = useGameStateStore((state) => state.setSessionId);
 
     const saveGame = () => {
-        GameServiceApi.saveGameState()
+        GameServiceApi.saveGameState().then((state) => {
+            setSessionId(state.id)
+        })
     }
     const loadGame = () => {
-        GameServiceApi.loadGameState().then((state) => {
-            loadGameState(state.state)
+        if (!sessionId) return;
+        GameServiceApi.loadGameState(sessionId).then((state) => {
+            loadGameState(state)
         })
     }
 
