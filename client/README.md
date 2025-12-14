@@ -1,4 +1,4 @@
-# Vinci challenge
+# Vinci challenge - Client
 
 This repository serves to store the coding challenge of building a 3D Tetris game for Vinci client.
 
