@@ -1,7 +1,7 @@
 from fastapi.exceptions import HTTPException
 from fastapi import APIRouter
-from server.models.GameState import BaseGameState, GameState, UpsertGameState
-from server.database.db import SessionDep
+from server.app.models.GameState import BaseGameState, GameState, UpsertGameState
+from server.app.database.db import SessionDep
 import uuid
 
 router = APIRouter(prefix="/user", tags=["user"])

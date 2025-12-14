@@ -1,5 +1,5 @@
 from sqlmodel import Session, SQLModel, create_engine
-from server.models import GameState
+from server.app.models import GameState
 from fastapi import Depends
 from typing import Annotated
 

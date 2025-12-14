@@ -13,8 +13,8 @@ export PYTHONPATH="$(cd .. && pwd):$PYTHONPATH"
 # 1. Run migrations / initialization
 # This ensures tables exist before the app wakes up
 echo "Running database initialization..."
-python init_db.py
+python app/init_db.py
 
 # 2. Start the application
 echo "Starting FastAPI..."
-fastapi run --workers 4 main.py
+fastapi run --workers 4 app/main.py

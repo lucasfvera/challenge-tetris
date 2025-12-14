@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from server.settings.cors_origins import cors_origins
-from server.api import main
+from server.app.settings.cors_origins import cors_origins
+from server.app.api import main
 
 app = FastAPI()
 

@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel
-from server.database.db import engine
-from server.models.GameState import GameState
+from server.app.database.db import engine
+from server.app.models.GameState import GameState
 
 def init_db():
     # 1. Create Tables
