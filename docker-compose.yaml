@@ -24,5 +24,10 @@ services:
     env_file:
       - .env
 
+  client:
+    build: ./client
+    ports:
+      - "5173:5173"
+
 volumes:
   postgres-db-vinci-challenge:
