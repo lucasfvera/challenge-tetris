@@ -17,4 +17,4 @@ python app/init_db.py
 
 # 2. Start the application
 echo "Starting FastAPI..."
-fastapi run --workers 4 app/main.py
+fastapi run --workers 4 app/main.py --port 8000
