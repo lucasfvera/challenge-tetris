@@ -3,9 +3,14 @@ import { createActivePiece, TETROMINOES, type PieceType } from '../utils/tetromi
 import { randomPiece } from '../helpers/randomPiece';
 import { createEmptyBoard, type Board, updateBoard } from '../utils/board';
 import { type IActivePiece } from '../hooks/useTetris';
-import { INITIAL_LEVEL, SCORE_PER_LEVEL } from '../settings/gameSettings';
+import { INITIAL_LEVEL, MAX_SAVE_SLOTS, SCORE_PER_LEVEL } from '../settings/gameSettings';
 import { persist } from 'zustand/middleware';
-import type { GameStatePayload } from '../api/gameService/types';
+import type { GameStatePayload, SaveSlotInfo } from '../api/gameService/types';
+
+// Generate a unique user ID for this browser instance
+const generateUserId = (): string => {
+    return crypto.randomUUID();
+};
 
 interface UserGameState {
     activePiece: IActivePiece;
@@ -13,8 +18,9 @@ interface UserGameState {
     level: number;
     nextPieceType: PieceType;
     score: number;
-    // We will track as a session ID the id returned by the server when saving the game. This should actually be handled by cookies
-    sessionId: string;
+    userId: string;
+    currentSlot: number | null;
+    saveSlots: SaveSlotInfo[];
 }
 
 interface GameStateStore extends UserGameState {
@@ -29,11 +35,19 @@ interface GameStateStore extends UserGameState {
     setGameOver: (isGameOver: boolean) => void;
     resetGame: () => void;
     loadGameState: (loadedState: GameStatePayload) => void;
-    setSessionId: (sessionId: string) => void;
+    setSaveSlots: (slots: SaveSlotInfo[]) => void;
+    setCurrentSlot: (slot: number | null) => void;
+    updateSlotInfo: (slotNumber: number, info: Partial<SaveSlotInfo>) => void;
+    clearSlot: (slotNumber: number) => void;
 }
 
 export const useGameStateStore = create<GameStateStore>()(persist((set) => ({
-    sessionId: "",
+    userId: generateUserId(),
+    currentSlot: null,
+    saveSlots: Array.from({ length: MAX_SAVE_SLOTS }, (_, i) => ({
+        slot_number: i + 1,
+        is_empty: true
+    })),
     level: 1,
     isGamePaused: false,
     isGameOver: false,
@@ -60,13 +74,14 @@ export const useGameStateStore = create<GameStateStore>()(persist((set) => ({
     setNextPieceType: (pieceType) => set({ nextPieceType: pieceType }),
     setScore: (score) => set({ score }),
     setGameOver: (isGameOver) => set({ isGameOver }),
-    resetGame: () => set(() => ({ level: 1, score: 0, isGameOver: false, isGamePaused: false, activePiece: createActivePiece(randomPiece().type), nextPieceType: randomPiece().type, board: createEmptyBoard() })),
+    resetGame: () => set(() => ({ level: 1, score: 0, isGameOver: false, isGamePaused: false, activePiece: createActivePiece(randomPiece().type), nextPieceType: randomPiece().type, board: createEmptyBoard(), currentSlot: null })),
     loadGameState: (loadedState: GameStatePayload) => set((state) => {
         const activePieceType = loadedState.active_piece_type as PieceType
         const nextPieceType = loadedState.next_piece_type as PieceType
         const activePieceTetromino = TETROMINOES[activePieceType]
 
-        const stateToLoad: UserGameState = {
+        return {
+            ...state,
             activePiece: {
                 pos: {
                     x: loadedState.active_piece_x,
@@ -81,10 +96,21 @@ export const useGameStateStore = create<GameStateStore>()(persist((set) => ({
             level: loadedState.level,
             nextPieceType: nextPieceType,
             score: loadedState.score,
-            sessionId: loadedState.id!
+            currentSlot: loadedState.slot_number
         }
-
-        return { ...state, ...stateToLoad }
     }),
-    setSessionId: (sessionId: string) => set({ sessionId }),
+    setSaveSlots: (slots: SaveSlotInfo[]) => set({ saveSlots: slots }),
+    setCurrentSlot: (slot: number | null) => set({ currentSlot: slot }),
+    updateSlotInfo: (slotNumber: number, info: Partial<SaveSlotInfo>) => set((state) => ({
+        saveSlots: state.saveSlots.map(slot =>
+            slot.slot_number === slotNumber ? { ...slot, ...info } : slot
+        )
+    })),
+    clearSlot: (slotNumber: number) => set((state) => ({
+        saveSlots: state.saveSlots.map(slot =>
+            slot.slot_number === slotNumber ? { slot_number: slotNumber, is_empty: true } : slot
+        ),
+        currentSlot: state.currentSlot === slotNumber ? null : state.currentSlot
+    })),
 }), { name: "gameState" }))
+

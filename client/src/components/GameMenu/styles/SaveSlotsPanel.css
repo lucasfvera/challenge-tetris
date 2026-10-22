@@ -1,0 +1,134 @@
+.save-slots-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    margin: 1rem 0;
+    box-sizing: border-box;
+}
+
+.save-slots-title {
+    font-size: 1rem;
+    color: #888;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.save-slot {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden; /* Contain inner elements */
+}
+
+.save-slot:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.save-slot.active {
+    border-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.slot-number {
+    font-size: 1.25rem;
+    font-weight: bold;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    flex-shrink: 0; /* Prevent squashing */
+}
+
+.slot-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    overflow: hidden; /* Handle text overflow */
+}
+
+.slot-empty {
+    color: #666;
+    font-style: italic;
+    white-space: nowrap;
+}
+
+.slot-data {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    flex-wrap: wrap; /* Allow wrapping if tight */
+}
+
+.slot-data span {
+    color: #aaa;
+    white-space: nowrap;
+}
+
+.slot-data strong {
+    color: #fff;
+}
+
+.slot-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0; /* Keep buttons strictly sized */
+    margin-left: auto; /* Push to right */
+}
+
+.slot-button {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.875rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.slot-button.save {
+    background: #4CAF50;
+    color: white;
+}
+
+.slot-button.save:hover {
+    background: #45a049;
+}
+
+.slot-button.load {
+    background: #2196F3;
+    color: white;
+}
+
+.slot-button.load:hover {
+    background: #1976D2;
+}
+
+.slot-button.delete {
+    background: #b03333;
+    color: white;
+}
+
+.slot-button.delete:hover {
+    background: #a02323;
+}
+
+.slot-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

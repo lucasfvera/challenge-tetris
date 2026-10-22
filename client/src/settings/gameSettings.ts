@@ -7,3 +7,6 @@ export const BOARD_HEIGHT = 20;
 export const INITIAL_PIECE_POSITION = { x: BOARD_WIDTH / 2 - 1, y: BOARD_HEIGHT - 1 };
 export const SCORE_PER_LEVEL = 10;
 export const INITIAL_LEVEL = 1;
+
+// Save slots configuration
+export const MAX_SAVE_SLOTS = 3;

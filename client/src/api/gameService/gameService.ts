@@ -1,6 +1,7 @@
 import { ENDPOINTS } from "./endpoints";
 import { useGameStateStore } from "../../store/store";
-import { type GameStatePayload } from "./types";
+import { type GameStatePayload, type SaveSlotInfo } from "./types";
+import { MAX_SAVE_SLOTS } from "../../settings/gameSettings";
 
 const GAME_SERVICE_BASE_URL = "http://localhost:8000";
 
@@ -12,12 +13,12 @@ class GameServiceApi {
         this.baseUrl = baseUrl;
     }
 
-    async saveGameState() {
-        const { activePiece, board, level, nextPieceType, score, sessionId } = useGameStateStore.getState();
+    async saveGameState(slotNumber: number): Promise<GameStatePayload | undefined> {
+        const { activePiece, board, level, nextPieceType, score, userId } = useGameStateStore.getState();
 
-        // If the user has a sessionId, they already saved the game once and we will use that same "session" to store new game saves.
         const dataToSave: GameStatePayload = {
-            id: sessionId ? sessionId : undefined,
+            slot_number: slotNumber,
+            user_id: userId,
             active_piece_type: activePiece.type,
             active_piece_x: activePiece.pos.x,
             active_piece_y: activePiece.pos.y,
@@ -34,9 +35,7 @@ class GameServiceApi {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    ...dataToSave
-                })
+                body: JSON.stringify(dataToSave)
             });
 
             if (!response.ok) {
@@ -48,13 +47,15 @@ class GameServiceApi {
         } catch (error) {
             console.error("Error saving game state:", error);
         }
-
-
     }
 
-    async loadGameState(sessionId: string) {
+    async loadGameState(slotNumber: number): Promise<GameStatePayload | undefined> {
+        const { userId } = useGameStateStore.getState();
+
         try {
-            const response = await fetch(`${this.baseUrl}${ENDPOINTS.USER.GAME_STATE}/${sessionId}`);
+            const response = await fetch(
+                `${this.baseUrl}${ENDPOINTS.USER.GAME_STATE}/${slotNumber}?user_id=${encodeURIComponent(userId)}`
+            );
             if (!response.ok) {
                 throw new Error("Failed to load game state");
             }
@@ -62,6 +63,46 @@ class GameServiceApi {
             return response.json();
         } catch (error) {
             console.error("Error loading game state:", error);
+        }
+    }
+
+    async getSaveSlots(): Promise<SaveSlotInfo[]> {
+        const { userId } = useGameStateStore.getState();
+
+        try {
+            const response = await fetch(
+                `${this.baseUrl}${ENDPOINTS.USER.GAME_SLOTS}?user_id=${encodeURIComponent(userId)}`
+            );
+            if (!response.ok) {
+                throw new Error("Failed to get save slots");
+            }
+
+            return response.json();
+        } catch (error) {
+            console.error("Error getting save slots:", error);
+            return Array.from({ length: MAX_SAVE_SLOTS }, (_, i) => ({
+                slot_number: i + 1,
+                is_empty: true
+            }));
+        }
+    }
+
+    async deleteSlot(slotNumber: number): Promise<boolean> {
+        const { userId } = useGameStateStore.getState();
+
+        try {
+            const response = await fetch(
+                `${this.baseUrl}${ENDPOINTS.USER.GAME_STATE}/${slotNumber}?user_id=${encodeURIComponent(userId)}`,
+                { method: "DELETE" }
+            );
+            if (!response.ok) {
+                throw new Error("Failed to delete save slot");
+            }
+
+            return true;
+        } catch (error) {
+            console.error("Error deleting save slot:", error);
+            return false;
         }
     }
 }
