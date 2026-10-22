@@ -1,10 +1,14 @@
 import uuid
 from sqlmodel import SQLModel, Field
-from sqlalchemy import JSON, Column
+from sqlalchemy import JSON, Column, UniqueConstraint
+from server.app.settings.game_settings import MAX_SAVE_SLOTS
 
 
 class BaseGameState(SQLModel):
     """Base game state model for database."""
+    # Slot identification
+    slot_number: int = Field(ge=1, le=MAX_SAVE_SLOTS)
+    user_id: str = Field(default="default")  # UUID string to scope saves per browser
     # Game metrics
     score: int
     level: int
@@ -22,7 +26,7 @@ class BaseGameState(SQLModel):
 
 class UpsertGameState(BaseGameState):
     """Upsert game state model for database."""
-    id: uuid.UUID | None = None
+    pass
 
 
 class GameState(BaseGameState, table=True):
@@ -32,6 +36,10 @@ class GameState(BaseGameState, table=True):
     Active piece data is flattened into individual columns for efficiency.
     Board data is stored as JSON since it's complex and variable.
     Static Tetromino shape definitions are NOT stored in the database.
+    Each user can have up to 3 save slots.
     """
+    __table_args__ = (
+        UniqueConstraint("user_id", "slot_number", name="uq_user_slot"),
+    )
     id: uuid.UUID | None = Field(default_factory=uuid.uuid4, primary_key=True)
 
