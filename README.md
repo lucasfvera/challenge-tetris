@@ -1,4 +1,4 @@
-# Vinci Challenge
+# Tetris Challenge
 
 A 3D Tetris game with save/load functionality.
 
